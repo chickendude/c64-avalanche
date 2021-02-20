@@ -30,3 +30,15 @@ check_right:
 		inc x_pos
 end_read_keys:
 	rts
+
+; ###############################
+; Waits for a key to be pressed
+;
+; Inputs: None
+; Outputs: None
+wait_key:
+	lda joystick
+	ora #%11100000
+	cmp #$FF
+	 beq wait_key
+	rts

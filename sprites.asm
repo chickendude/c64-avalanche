@@ -5,8 +5,11 @@
 ;	$82	= address of sprite
 ;	$86 = x coord
 ;	$87	= y coord
+; Destroys:
+;	a, x, y
+;	$80, $81, $84
 draw_sprite:
-	jsr get_coords
+	jsr get_coords	; Get starting VRAM coordinates into $80
 	ldy #0
 draw_sprite_row:
 	lda ($82), y	; load (address + y) from ($82) into a, $82 holds sprite address
@@ -23,6 +26,9 @@ draw_sprite_row:
 ; Inputs: --
 ; Outputs:
 ;	$80 = Sprite coordinates (Y * 40 + X * 8 + 	$2000)
+; Destroys:
+;	a, x
+;	$81, $84
 get_coords:
 	lda #0
 	sta $84			; temp variable

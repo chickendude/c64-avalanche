@@ -1,5 +1,4 @@
-joystick = $DC00
-
+	include "c64.inc"
 reg1		equ $80
 reg2		equ $81
 reg3		equ $82
@@ -12,10 +11,10 @@ y_pos		equ $91
 keys		equ $92
 key_timer	equ $93
 
-icicles			equ $40 ; 3 bytes each: x, y, frame
-icicle_frame	equ $40 ; 3 bytes each: x, y, frame
-icicle_x		equ $41 ; 3 bytes each: x, y, frame
-icicle_y		equ $42 ; 3 bytes each: x, y, frame
+icicles			equ $10 ; 3 bytes each: x, y, frame
+icicle_frame	equ $10 ; 3 bytes each: x, y, frame
+icicle_x		equ $11 ; 3 bytes each: x, y, frame
+icicle_y		equ $12 ; 3 bytes each: x, y, frame
 
 
 ; Init/header
@@ -27,13 +26,13 @@ Start:
 ; Program start at $0810
 	sei				; if we don't disable, interrupts can override our variables
 	lda #%00111011	; turn on graphics mode
-	sta $D011
+	sta VCTRL1
 
 	lda #%11001000	; 2-color mode
-	sta $D016
+	sta VCTRL2
 
 	lda #%00011000	; set screen base to $2000 (color at $400)
-	sta $D018
+	sta VBASE
 
 ; Prepare SID to use as random number generator, read from $D41B to get random number
 	lda #$6F
@@ -68,6 +67,10 @@ Start:
 	lda #24
 	sta y_pos
 	jsr draw_player
+
+	jsr splash
+	jsr wait_key
+	jsr splash
 main:
 ; Destination screen address
 	jsr draw_icicles
@@ -97,5 +100,8 @@ delay_loop:
 	include "icicles.asm"
 	include "keys.asm"
 	include "player.asm"
+	include "splash.asm"
 ; data
 	include "sprites.inc"
+title_txt:
+	db a_,v_,a_,l_,a_,n_,c_,h_,e_,0
