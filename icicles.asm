@@ -63,14 +63,14 @@ draw_icicle:
 ; frame id
 	lda icicle_frame, x		; Calculate the frame to use
 	asl						; Frame * 2
-	and #%00011000			; Frame = 8, 16, or 24
-	clc
-	adc #<icicle_sprite1
-	sta $82
-	lda #0
-	adc #>icicle_sprite1
-	sta $83
-	jmp draw_sprite
+	and #%00011000			; Frame = 0, 8, 16, or 24
+	clc						; In case carry is set
+	adc #<icicle_sprite1	; Add frame * 8 to sprite address
+	sta $82					; Save LSB
+	lda #0					; Add carry if there is one
+	adc #>icicle_sprite1	;
+	sta $83					; Save sprite address's MSB
+	jmp draw_sprite			; [sprites.asm]
 
 ; Set all icicles to empty
 clear_icicles:

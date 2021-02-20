@@ -58,7 +58,7 @@ Start:
 	sta $80
 	lda #>$400
 	sta $81
-	ldx #4			; 4 * 256
+	ldx #4				; 4 * 256
 	lda #$76
 	jsr clear
 
@@ -68,9 +68,9 @@ Start:
 	sta y_pos
 	jsr draw_player
 
-	jsr splash
-	jsr wait_key
-	jsr splash
+	jsr splash			; [splash.asm] Draw splash text
+	jsr wait_key		; Wait for a key
+	jsr splash			; [splash.asm] Clear splash text
 main:
 ; Destination screen address
 	jsr draw_icicles

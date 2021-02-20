@@ -12,10 +12,10 @@ splash:
 	lda #>title_txt
 	sta $41
 
-	lda #10					; starting x coordinate
+	lda #15					; starting x coordinate
 	sta $86
 
-	lda #3					; y coordinate
+	lda #11					; y coordinate
 	sta $87
 	ldy #0
 splash_char:
