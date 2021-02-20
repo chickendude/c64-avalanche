@@ -34,6 +34,14 @@ Start:
 	lda #%00011000	; set screen base to $2000 (color at $400)
 	sta VBASE
 
+; Save Zero Page values
+	ldy #$FF
+.loop:
+	lda $0000, y
+	sta $C000, y
+	dey
+	 bne .loop
+
 ; Prepare SID to use as random number generator, read from $D41B to get random number
 	lda #$6F
 	ldy #$81
@@ -66,15 +74,17 @@ Start:
 	sta x_pos
 	lda #24
 	sta y_pos
-	jsr draw_player
 
+; splash screen
 	jsr splash			; [splash.asm] Draw splash text
 	jsr wait_key		; Wait for a key
 	jsr splash			; [splash.asm] Clear splash text
+
+	jsr draw_player
 main:
-; Destination screen address
 	jsr draw_icicles
 	jsr delay
+	jsr check_collisions
 	lda joystick		; Joystick 1
 	ora #%11100000
 	cmp #$FF
@@ -85,6 +95,24 @@ main:
 	jsr draw_player
 	jmp main
 
+; Collision detection
+check_collisions:
+	ldy #0
+.loop:
+	lda icicle_y, y
+	cmp #24
+	 bne .skip
+	lda icicle_x, y
+	cmp x_pos
+	 beq quit
+.skip:
+	iny
+	iny
+	iny
+	cpy #30
+	 bne .loop
+	rts
+
 delay:
 	ldx #20
 	ldy #0
@@ -94,6 +122,30 @@ delay_loop:
 	dex
 	bne delay_loop
 	rts
+
+quit:
+; Restore Zero Page values
+	ldx #$FD
+.loop:
+	lda $C002, x
+	sta $02, x
+	dex
+	 bne .loop
+	cli
+
+	lda #%10011011	; turn on graphics mode
+	sta VCTRL1
+
+	lda #%00010100	; 2-color mode
+	sta VCTRL2
+
+	lda #%00010100	; set screen base to $2000 (color at $400)
+	sta VBASE
+
+	pla
+	pla
+	rts
+
 
 ; routines
 	include "sprites.asm"

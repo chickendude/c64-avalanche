@@ -10,7 +10,7 @@ draw_icicles_loop:
 	ldx $89							; Save X since it gets overwritten in some subroutines
 	ldy icicle_frame, x				; Put current frame number into Y
 	iny								; Advance to next frame
-	 bmi .2					; If frame is still < 0, don't
+	 bmi .2							; If frame is still < 0, don't
 	cpy #16
 	 bcc .2
 		dey

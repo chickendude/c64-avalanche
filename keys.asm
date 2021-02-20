@@ -5,16 +5,8 @@
 ;	keys	= current joystick state
 read_keys:
 	ldx #0
-check_up:
 	ror keys
-	 bcs check_down	; if carry is set (bit = 1), that means key wasn't pressed
-	dec y_pos
-	 bpl check_down
-		stx y_pos
-check_down:
 	ror keys
-	 bcs check_left
-	inc y_pos
 check_left:
 	ror keys
 	 bcs check_right
