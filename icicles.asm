@@ -62,30 +62,15 @@ draw_icicle:
 
 ; frame id
 	lda icicle_frame, x		; Calculate the frame to use
-	ror						; Frame / 2
+	asl						; Frame * 2
+	and #%00011000			; Frame = 8, 16, or 24
 	clc
-	ror						; / 4
-	and #3
-	sta $81					; Save frame to $81
-
-; Determine which frame to draw
-	lda #<icicle_sprite1		; Load base sprite address into $82
-	sta $82						;
-	lda #>icicle_sprite1		;
-	sta $83						;
-	clc
-draw_icicle_frame_loop:
-	dec $81						; If $90 = 0, we've found the frame
-	 bpl draw_icicle_continue	; Out of range, so have to do it this way
-		jmp draw_sprite			; [sprites.asm] $86/$87 = x/y, $82 = sprite address
-draw_icicle_continue:
-	lda #8
-	adc $82
+	adc #<icicle_sprite1
 	sta $82
-	 bcc draw_icicle_frame_loop
-	inc $83
-	jmp draw_icicle_frame_loop
-
+	lda #0
+	adc #>icicle_sprite1
+	sta $83
+	jmp draw_sprite
 
 ; Set all icicles to empty
 clear_icicles:
